@@ -34,11 +34,59 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Force light mode — clinical systems should not invert colors */
+label {
+  color: #334155;
+  font-weight: 650;
+}
+
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
+  min-height: 2.75rem;
+  border-color: #cbd5e1;
+  border-radius: 0.75rem;
+  background-color: #ffffff;
+  color: #0f172a;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+textarea {
+  min-height: 6rem;
+}
+
+input:not([type="checkbox"]):not([type="radio"]):focus,
+select:focus,
+textarea:focus {
+  border-color: #2563eb;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  min-height: 2.75rem;
+}
+
+button:not(:disabled) {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+/* Force light mode because clinical systems should not invert colors. */
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: light;
   }
+
   body {
     background-color: #f8fafc;
     color: #0f172a;

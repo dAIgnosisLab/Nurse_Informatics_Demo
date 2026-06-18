@@ -4,70 +4,100 @@ import Link from 'next/link'
 
 const triageColors = {
   Red: 'bg-red-100 text-red-800 border-red-300',
-  Yellow: 'bg-yellow-100 text-yellow-800 border-yellow-300',
-  Green: 'bg-green-100 text-green-800 border-green-300',
+  Yellow: 'bg-amber-100 text-amber-800 border-amber-300',
+  Green: 'bg-emerald-100 text-emerald-800 border-emerald-300',
+}
+
+const triageLabels = {
+  Red: 'Red - immediate',
+  Yellow: 'Yellow - urgent',
+  Green: 'Green - stable',
 }
 
 const statusColors = {
-  Waiting: 'bg-orange-100 text-orange-700',
-  UnderTreatment: 'bg-blue-100 text-blue-700',
-  Admitted: 'bg-green-100 text-green-700',
-  Transferred: 'bg-purple-100 text-purple-700',
-  Discharged: 'bg-gray-100 text-gray-500',
+  Waiting: 'bg-amber-100 text-amber-800 border-amber-200',
+  UnderTreatment: 'bg-blue-100 text-blue-800 border-blue-200',
+  Admitted: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+  Transferred: 'bg-violet-100 text-violet-800 border-violet-200',
+  Discharged: 'bg-slate-100 text-slate-600 border-slate-200',
+}
+
+const statusLabels = {
+  UnderTreatment: 'Under treatment',
 }
 
 export default function PatientCard({ patient, href }) {
   const triage = patient.triage?.triageCode
   const latestVital = patient.vitalSigns?.[0] ?? patient.erVitals
+  const detailItems = [
+    `${patient.age} years`,
+    patient.sex,
+    patient.ipNumber ? `IP ${patient.ipNumber}` : null,
+    patient.bedNumber ? `Bed ${patient.bedNumber}` : null,
+    patient.ward,
+  ].filter(Boolean)
 
   return (
-    <Link href={href} className="block">
-      <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md hover:border-blue-300 transition-all cursor-pointer">
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              <h3 className="font-semibold text-gray-900 truncate">{patient.name}</h3>
+    <Link href={href} className="block" aria-label={`Open patient record for ${patient.name}`}>
+      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-blue-300 hover:bg-blue-50/40 hover:shadow-md sm:p-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="text-lg font-bold text-slate-950">{patient.name}</h3>
               {triage && (
-                <span className={`text-xs px-2 py-0.5 rounded border font-bold ${triageColors[triage]}`}>
-                  {triage}
+                <span className={`rounded-full border px-2.5 py-1 text-xs font-bold ${triageColors[triage]}`}>
+                  {triageLabels[triage] ?? triage}
                 </span>
               )}
             </div>
-            <p className="text-sm text-gray-500 mt-0.5">
-              {patient.age}y · {patient.sex}
-              {patient.bedNumber && <span> · Bed {patient.bedNumber}</span>}
-              {patient.ward && <span> · {patient.ward}</span>}
-            </p>
+
+            <div className="mt-2 flex flex-wrap gap-2">
+              {detailItems.map((item) => (
+                <span key={item} className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">
+                  {item}
+                </span>
+              ))}
+            </div>
+
             {patient.diagnosis && (
-              <p className="text-sm text-gray-700 mt-1 truncate">{patient.diagnosis}</p>
+              <p className="mt-3 text-sm font-medium text-slate-700">{patient.diagnosis}</p>
             )}
           </div>
-          <div className="flex flex-col items-end gap-1 shrink-0">
-            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusColors[patient.status] ?? 'bg-gray-100 text-gray-600'}`}>
-              {patient.status}
+
+          <div className="flex flex-row flex-wrap gap-2 sm:flex-col sm:items-end">
+            <span className={`rounded-full border px-3 py-1 text-xs font-bold ${statusColors[patient.status] ?? 'bg-slate-100 text-slate-600 border-slate-200'}`}>
+              {statusLabels[patient.status] ?? patient.status}
             </span>
             {patient.ventilatorSupport?.inUse && (
-              <span className="text-xs px-2 py-0.5 rounded-full bg-red-100 text-red-700 font-medium">Ventilator</span>
+              <span className="rounded-full border border-red-300 bg-red-100 px-3 py-1 text-xs font-bold text-red-800">
+                On ventilator
+              </span>
             )}
           </div>
         </div>
-        {latestVital && (
-          <div className="mt-2 flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-gray-500 border-t border-gray-100 pt-2">
-            {latestVital.bp && <span>BP {latestVital.bp}</span>}
-            {latestVital.pulse && <span>HR {latestVital.pulse}</span>}
-            {latestVital.spo2 && (
-              <span className={latestVital.spo2 < 95 ? 'text-red-600 font-semibold' : ''}>
-                SpO₂ {latestVital.spo2}%
-              </span>
-            )}
-            {latestVital.temperature && (
-              <span className={latestVital.temperature > 37.5 ? 'text-red-600 font-semibold' : ''}>
-                Temp {latestVital.temperature}°C
-              </span>
-            )}
+
+        {latestVital ? (
+          <div className="mt-4 grid grid-cols-2 gap-2 border-t border-slate-100 pt-4 text-sm sm:grid-cols-4">
+            {latestVital.bp && <VitalPill label="BP" value={latestVital.bp} />}
+            {latestVital.pulse && <VitalPill label="Pulse" value={latestVital.pulse} />}
+            {latestVital.spo2 && <VitalPill label="SpO2" value={`${latestVital.spo2}%`} warning={latestVital.spo2 < 95} />}
+            {latestVital.temperature && <VitalPill label="Temp" value={`${latestVital.temperature} C`} warning={latestVital.temperature > 37.5} />}
           </div>
+        ) : (
+          <p className="mt-4 rounded-xl bg-slate-50 px-3 py-2 text-sm font-medium text-slate-500">
+            No vitals recorded yet
+          </p>
         )}
       </div>
     </Link>
+  )
+}
+
+function VitalPill({ label, value, warning = false }) {
+  return (
+    <div className={`rounded-xl border px-3 py-2 ${warning ? 'border-red-200 bg-red-50' : 'border-slate-200 bg-slate-50'}`}>
+      <p className={`text-xs font-semibold ${warning ? 'text-red-600' : 'text-slate-500'}`}>{label}</p>
+      <p className={`font-bold ${warning ? 'text-red-800' : 'text-slate-800'}`}>{value}</p>
+    </div>
   )
 }

@@ -4,50 +4,45 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 const depts = [
-  { label: 'ER', href: '/er', color: 'bg-red-500' },
-  { label: 'IPD', href: '/ipd', color: 'bg-blue-500' },
-  { label: 'ICU', href: '/icu', color: 'bg-purple-600' },
+  { label: 'ER', fullLabel: 'Emergency', href: '/er', active: 'bg-red-600 text-white', hover: 'hover:bg-red-50 hover:text-red-700' },
+  { label: 'Ward', fullLabel: 'Ward Care', href: '/ipd', active: 'bg-blue-600 text-white', hover: 'hover:bg-blue-50 hover:text-blue-700' },
+  { label: 'ICU', fullLabel: 'Critical Care', href: '/icu', active: 'bg-violet-600 text-white', hover: 'hover:bg-violet-50 hover:text-violet-700' },
 ]
 
 export default function TopNav() {
   const path = usePathname()
 
   return (
-    <nav className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-14">
-        <Link href="/" className="flex items-center gap-2 font-bold text-gray-800 text-lg">
-          <span className="text-blue-600">+</span>
-          <span>NurseInfo</span>
+    <nav className="sticky top-0 z-50 border-b border-slate-200 bg-white shadow-sm">
+      <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+        <Link
+          href="/"
+          className={`inline-flex min-h-11 items-center rounded-xl px-3 text-base font-bold transition ${
+            path === '/' ? 'bg-slate-900 text-white' : 'text-slate-900 hover:bg-slate-100'
+          }`}
+          aria-current={path === '/' ? 'page' : undefined}
+        >
+          Nurse Informatics
         </Link>
 
-        <div className="flex items-center gap-1">
-          <span className="text-xs text-gray-500 mr-2 hidden sm:block">Department:</span>
+        <div className="flex gap-2 overflow-x-auto pb-1 sm:pb-0">
           {depts.map((d) => {
             const active = path.startsWith(d.href)
             return (
               <Link
                 key={d.label}
                 href={d.href}
-                className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${
-                  active
-                    ? `${d.color} text-white`
-                    : 'text-gray-600 hover:bg-gray-100'
+                className={`inline-flex min-h-11 shrink-0 items-center rounded-xl px-4 text-sm font-semibold transition ${
+                  active ? d.active : `bg-slate-50 text-slate-700 ${d.hover}`
                 }`}
+                aria-current={active ? 'page' : undefined}
               >
-                {d.label}
+                <span className="sm:hidden">{d.label}</span>
+                <span className="hidden sm:inline">{d.fullLabel}</span>
               </Link>
             )
           })}
         </div>
-
-        <Link
-          href="/"
-          className={`text-sm font-medium px-3 py-1.5 rounded transition-colors ${
-            path === '/' ? 'bg-gray-800 text-white' : 'text-gray-600 hover:bg-gray-100'
-          }`}
-        >
-          Dashboard
-        </Link>
       </div>
     </nav>
   )

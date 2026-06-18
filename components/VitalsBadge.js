@@ -4,32 +4,37 @@ export default function VitalsBadge({ vitals }) {
   if (!vitals) return null
 
   const bp = vitals.bp ? parseBP(vitals.bp) : null
-
   const items = [
     { label: 'BP', value: vitals.bp, abnormal: bp && isAbnormal('systolic', bp.systolic) },
-    { label: 'HR', value: vitals.pulse ? `${vitals.pulse}` : null, abnormal: isAbnormal('pulse', vitals.pulse) },
-    { label: 'RR', value: vitals.respiration ? `${vitals.respiration}` : null, abnormal: isAbnormal('respiration', vitals.respiration) },
-    { label: 'SpO₂', value: vitals.spo2 ? `${vitals.spo2}%` : null, abnormal: isAbnormal('spo2', vitals.spo2) },
-    { label: 'Temp', value: vitals.temperature ? `${vitals.temperature}°C` : null, abnormal: isAbnormal('temperature', vitals.temperature) },
-  ].filter((i) => i.value)
+    { label: 'Pulse', value: vitals.pulse ? `${vitals.pulse}` : null, abnormal: isAbnormal('pulse', vitals.pulse) },
+    { label: 'Resp', value: vitals.respiration ? `${vitals.respiration}` : null, abnormal: isAbnormal('respiration', vitals.respiration) },
+    { label: 'SpO2', value: vitals.spo2 ? `${vitals.spo2}%` : null, abnormal: isAbnormal('spo2', vitals.spo2) },
+    { label: 'Temp', value: vitals.temperature ? `${vitals.temperature} C` : null, abnormal: isAbnormal('temperature', vitals.temperature) },
+  ].filter((item) => item.value)
 
   if (!items.length) return null
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
       {items.map((item) => (
-        <span
+        <div
           key={item.label}
-          className={`inline-flex items-center gap-1 px-2.5 py-1 rounded text-xs font-medium ${
-            item.abnormal
-              ? 'bg-red-100 text-red-700 border border-red-300'
-              : 'bg-gray-100 text-gray-700'
+          className={`rounded-xl border px-3 py-2 ${
+            item.abnormal ? 'border-red-200 bg-red-50' : 'border-slate-200 bg-slate-50'
           }`}
         >
-          <span className="text-gray-500">{item.label}</span>
-          {item.value}
-          {item.abnormal && <span className="text-red-500">!</span>}
-        </span>
+          <div className="flex items-center justify-between gap-3">
+            <p className={`text-xs font-bold ${item.abnormal ? 'text-red-600' : 'text-slate-500'}`}>{item.label}</p>
+            {item.abnormal && (
+              <span className="rounded-full bg-red-600 px-2 py-0.5 text-[10px] font-black uppercase text-white">
+                Check
+              </span>
+            )}
+          </div>
+          <p className={`mt-1 text-base font-bold ${item.abnormal ? 'text-red-900' : 'text-slate-900'}`}>
+            {item.value}
+          </p>
+        </div>
       ))}
     </div>
   )

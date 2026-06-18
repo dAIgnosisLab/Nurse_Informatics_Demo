@@ -1,32 +1,51 @@
 import Link from 'next/link'
 
 export default function FormCompletionList({ forms }) {
+  const completed = forms.filter((form) => form.filled).length
+  const total = forms.length
+
   return (
-    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-      <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
-        <h3 className="font-semibold text-gray-700 text-sm">Form Completion</h3>
+    <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div className="border-b border-slate-200 bg-slate-50 px-4 py-4">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <h3 className="text-base font-bold text-slate-950">Care steps</h3>
+            <p className="mt-1 text-sm text-slate-500">Open each step, fill it, then save.</p>
+          </div>
+          <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800">
+            {completed}/{total} done
+          </span>
+        </div>
       </div>
-      <ul className="divide-y divide-gray-100">
-        {forms.map((form) => (
+
+      <ul className="divide-y divide-slate-100">
+        {forms.map((form, index) => (
           <li key={form.label}>
             <Link
               href={form.href}
-              className="flex items-center justify-between px-4 py-2.5 hover:bg-gray-50 transition-colors"
+              className="flex min-h-16 items-center justify-between gap-3 px-4 py-3 transition hover:bg-blue-50/70"
             >
-              <span className="text-sm text-gray-700">{form.label}</span>
+              <div className="flex min-w-0 items-center gap-3">
+                <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-black ${
+                  form.filled ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
+                }`}>
+                  {index + 1}
+                </span>
+                <span className="truncate text-sm font-semibold text-slate-800">{form.label}</span>
+              </div>
               <span
-                className={`text-xs px-2.5 py-0.5 rounded-full font-medium ${
+                className={`shrink-0 rounded-full px-3 py-1 text-xs font-bold ${
                   form.filled
-                    ? 'bg-green-100 text-green-700'
-                    : 'bg-amber-100 text-amber-700'
+                    ? 'bg-emerald-100 text-emerald-700'
+                    : 'bg-amber-100 text-amber-800'
                 }`}
               >
-                {form.filled ? 'Filled' : 'Pending'}
+                {form.filled ? 'Done' : 'To do'}
               </span>
             </Link>
           </li>
         ))}
       </ul>
-    </div>
+    </section>
   )
 }
