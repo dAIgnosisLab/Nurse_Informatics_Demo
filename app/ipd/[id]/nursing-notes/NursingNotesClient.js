@@ -13,7 +13,7 @@ export default function NursingNotesClient({ patientId, initialRows }) {
   const [showAdd, setShowAdd] = useState(false)
 
   function AddForm() {
-    const [form, setForm] = useState({ shift: 'Morning', observations: 'Patient is conscious and oriented. Vital signs stable. No complaints of distress.', interventions: 'Medications administered as prescribed. IV site checked and patent.', patientResponse: 'Patient tolerated interventions well. Resting comfortably.', nurseName: 'Nurse Maya' })
+    const [form, setForm] = useState({ shift: 'Morning', observations: 'Patient is conscious and oriented. Vital signs stable. No complaints of distress.', interventions: 'Medications administered as prescribed. IV site checked and patent.', patientResponse: 'Patient tolerated interventions well. Resting comfortably.', nurseName: 'Anita Rai' })
     const set = (k, v) => setForm((f) => ({ ...f, [k]: v }))
     const [saving, setSaving] = useState(false)
 

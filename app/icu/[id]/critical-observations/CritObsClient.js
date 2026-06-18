@@ -11,7 +11,7 @@ export default function CritObsClient({ patientId, initialRows }) {
   const [showAdd, setShowAdd] = useState(false)
 
   function AddForm() {
-    const [form, setForm] = useState({ suddenChanges: 'Sudden drop in blood pressure noted. Patient became restless and diaphoretic.', emergencyInterventions: 'IV bolus 250mL NS given. Physician notified immediately. Vitals monitored every 15 min.', nurseName: 'Nurse Maya' })
+    const [form, setForm] = useState({ suddenChanges: 'Sudden drop in blood pressure noted. Patient became restless and diaphoretic.', emergencyInterventions: 'IV bolus 250mL NS given. Physician notified immediately. Vitals monitored every 15 min.', nurseName: 'Sunita Gurung' })
     const set = (k, v) => setForm((f) => ({ ...f, [k]: v }))
     const [saving, setSaving] = useState(false)
 

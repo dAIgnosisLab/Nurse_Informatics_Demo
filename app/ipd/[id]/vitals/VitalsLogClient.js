@@ -20,7 +20,7 @@ export default function VitalsLogClient({ patientId, initialRows }) {
   const [rows, setRows] = useState(initialRows)
 
   function AddForm({ onClose }) {
-    const [form, setForm] = useState({ bp: '120/80', pulse: '82', respiration: '16', spo2: '98', temperature: '37.2', nurseName: 'Nurse Maya' })
+    const [form, setForm] = useState({ bp: '120/80', pulse: '82', respiration: '16', spo2: '98', temperature: '37.2', nurseName: 'Anita Rai' })
     const [saving, setSaving] = useState(false)
     const set = (k, v) => setForm((f) => ({ ...f, [k]: v }))
 
