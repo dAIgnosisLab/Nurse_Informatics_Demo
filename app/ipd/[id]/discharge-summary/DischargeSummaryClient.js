@@ -1,11 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import FormShell from '@/components/forms/FormShell'
 
 export default function DischargeSummaryClient({ patientId, existing }) {
   const router = useRouter()
+  const dept = usePathname().startsWith('/icu/') ? 'icu' : 'ipd'
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [confirm, setConfirm] = useState(false)
@@ -28,14 +29,14 @@ export default function DischargeSummaryClient({ patientId, existing }) {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form),
       })
       if (!res.ok) throw new Error('Failed to save')
-      router.push('/ipd')
+      router.push(`/${dept}`)
     } catch (e) {
       setError(e.message); setSaving(false)
     }
   }
 
   return (
-    <FormShell title="Discharge Summary" backHref={`/ipd/${patientId}`} backLabel="Patient Dashboard" onSave={handleSave} saving={saving} saveLabel="Discharge Patient">
+    <FormShell title="Discharge Summary" backHref={`/${dept}/${patientId}`} backLabel="Patient Dashboard" onSave={handleSave} saving={saving} saveLabel="Discharge Patient">
       {error && <p className="mb-4 text-sm text-red-600 bg-red-50 p-3 rounded-lg">{error}</p>}
       {existing && <div className="mb-4 bg-green-50 border border-green-200 rounded-lg p-3 text-sm text-green-700">Discharge summary already on file — editing will update it.</div>}
       <div className="space-y-4">

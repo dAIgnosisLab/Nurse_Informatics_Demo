@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { format } from 'date-fns'
 
@@ -9,6 +9,7 @@ const shiftColors = { Morning: 'bg-yellow-100 text-yellow-700', Evening: 'bg-ora
 
 export default function NursingNotesClient({ patientId, initialRows }) {
   const router = useRouter()
+  const dept = usePathname().startsWith('/icu/') ? 'icu' : 'ipd'
   const [rows, setRows] = useState(initialRows)
   const [showAdd, setShowAdd] = useState(false)
 
@@ -59,7 +60,7 @@ export default function NursingNotesClient({ patientId, initialRows }) {
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 space-y-4">
       <div className="flex items-center justify-between">
-        <Link href={`/ipd/${patientId}`} className="inline-flex min-h-11 items-center rounded-xl border border-sky-100 bg-white px-4 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-sky-50">← Patient Dashboard</Link>
+        <Link href={`/${dept}/${patientId}`} className="inline-flex min-h-11 items-center rounded-xl border border-sky-100 bg-white px-4 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-sky-50">← Patient Dashboard</Link>
         <button onClick={() => setShowAdd(true)} className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700">+ Add Note</button>
       </div>
       <h2 className="text-xl font-bold text-gray-900">Nursing Notes</h2>

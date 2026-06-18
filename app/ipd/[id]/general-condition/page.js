@@ -1,12 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter, useParams } from 'next/navigation'
+import { useRouter, useParams, usePathname } from 'next/navigation'
 import FormShell from '@/components/forms/FormShell'
 
 export default function GeneralConditionPage() {
   const { id } = useParams()
   const router = useRouter()
+  const dept = usePathname().startsWith('/icu/') ? 'icu' : 'ipd'
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [form, setForm] = useState({
@@ -34,7 +35,7 @@ export default function GeneralConditionPage() {
         body: JSON.stringify(body),
       })
       if (!res.ok) throw new Error('Failed to save')
-      router.push(`/ipd/${id}`)
+      router.push(`/${dept}/${id}`)
     } catch (e) {
       setError(e.message)
       setSaving(false)
@@ -42,7 +43,7 @@ export default function GeneralConditionPage() {
   }
 
   return (
-    <FormShell title="General Condition" backHref={`/ipd/${id}`} backLabel="Patient Dashboard" onSave={handleSave} saving={saving}>
+    <FormShell title="General Condition" backHref={`/${dept}/${id}`} backLabel="Patient Dashboard" onSave={handleSave} saving={saving}>
       {error && <p className="mb-4 text-sm text-red-600 bg-red-50 p-3 rounded-lg">{error}</p>}
       <div className="space-y-5">
         <div>

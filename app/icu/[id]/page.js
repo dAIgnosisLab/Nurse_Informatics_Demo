@@ -47,14 +47,14 @@ export default async function ICUPatientDashboard({ params }) {
   ]
 
   const sharedForms = [
-    { label: 'General Condition', href: `/ipd/${id}/general-condition`, filled: !!p.generalCondition },
-    { label: 'Vital Signs', href: `/ipd/${id}/vitals`, filled: p.vitalSigns.length > 0 },
-    { label: 'Medications', href: `/ipd/${id}/medications`, filled: p.medications.length > 0 },
-    { label: 'Intake / Output', href: `/ipd/${id}/intake-output`, filled: p.intakeOutputs.length > 0 },
-    { label: 'Nursing Notes', href: `/ipd/${id}/nursing-notes`, filled: p.nursingNotes.length > 0 },
-    { label: 'Treatment Cardex', href: `/ipd/${id}/treatment-cardex`, filled: p.treatmentCardexes.length > 0 },
-    { label: 'IV Fluids', href: `/ipd/${id}/iv-fluids`, filled: p.ivFluids.length > 0 },
-    { label: 'Discharge Summary', href: `/ipd/${id}/discharge-summary`, filled: !!p.dischargeSummary },
+    { label: 'General Condition', href: `/icu/${id}/general-condition`, filled: !!p.generalCondition },
+    { label: 'Vital Signs', href: `/icu/${id}/vitals`, filled: p.vitalSigns.length > 0 },
+    { label: 'Medications', href: `/icu/${id}/medications`, filled: p.medications.length > 0 },
+    { label: 'Intake / Output', href: `/icu/${id}/intake-output`, filled: p.intakeOutputs.length > 0 },
+    { label: 'Nursing Notes', href: `/icu/${id}/nursing-notes`, filled: p.nursingNotes.length > 0 },
+    { label: 'Treatment Cardex', href: `/icu/${id}/treatment-cardex`, filled: p.treatmentCardexes.length > 0 },
+    { label: 'IV Fluids', href: `/icu/${id}/iv-fluids`, filled: p.ivFluids.length > 0 },
+    { label: 'Discharge Summary', href: `/icu/${id}/discharge-summary`, filled: !!p.dischargeSummary },
   ]
 
   return (
@@ -63,7 +63,7 @@ export default async function ICUPatientDashboard({ params }) {
         <Link href="/icu" className="inline-flex min-h-11 items-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50">← ICU Dashboard</Link>
         <div className="flex gap-2">
           <Link href={`/icu/${id}/transfer`} className="inline-flex min-h-11 items-center px-4 bg-purple-600 text-white text-sm font-medium rounded-xl hover:bg-purple-700 transition-colors">Transfer Patient →</Link>
-          <Link href={`/ipd/${id}/discharge-summary`} className="inline-flex min-h-11 items-center px-4 bg-gray-700 text-white text-sm font-medium rounded-xl hover:bg-gray-800 transition-colors">Discharge</Link>
+          <Link href={`/icu/${id}/discharge-summary`} className="inline-flex min-h-11 items-center px-4 bg-gray-700 text-white text-sm font-medium rounded-xl hover:bg-gray-800 transition-colors">Discharge</Link>
         </div>
       </div>
 

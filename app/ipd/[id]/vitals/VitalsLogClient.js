@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import LogTable from '@/components/LogTable'
 
@@ -17,6 +17,7 @@ const columns = [
 
 export default function VitalsLogClient({ patientId, initialRows }) {
   const router = useRouter()
+  const dept = usePathname().startsWith('/icu/') ? 'icu' : 'ipd'
   const [rows, setRows] = useState(initialRows)
 
   function AddForm({ onClose }) {
@@ -68,7 +69,7 @@ export default function VitalsLogClient({ patientId, initialRows }) {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6">
-      <Link href={`/ipd/${patientId}`} className="mb-4 inline-flex min-h-11 items-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50">← Patient Dashboard</Link>
+      <Link href={`/${dept}/${patientId}`} className="mb-4 inline-flex min-h-11 items-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50">← Patient Dashboard</Link>
       <LogTable title="Vital Signs Log" columns={columns} rows={rows} addForm={(onClose) => <AddForm onClose={onClose} />} emptyMessage="No vitals recorded yet." />
     </div>
   )

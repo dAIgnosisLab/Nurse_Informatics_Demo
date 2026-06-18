@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import LogTable from '@/components/LogTable'
 
@@ -19,6 +19,7 @@ const SUBTYPES = {
 
 export default function IOLogClient({ patientId, initialRows }) {
   const router = useRouter()
+  const dept = usePathname().startsWith('/icu/') ? 'icu' : 'ipd'
   const [rows, setRows] = useState(initialRows)
 
   const totalIn = rows.filter((r) => r.type === 'Intake').reduce((s, r) => s + r.quantity, 0)
@@ -72,7 +73,7 @@ export default function IOLogClient({ patientId, initialRows }) {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6 space-y-4">
-      <Link href={`/ipd/${patientId}`} className="mb-4 inline-flex min-h-11 items-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50">← Patient Dashboard</Link>
+      <Link href={`/${dept}/${patientId}`} className="mb-4 inline-flex min-h-11 items-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50">← Patient Dashboard</Link>
       <div className="grid grid-cols-3 gap-3">
         <div className="bg-blue-50 rounded-xl border border-blue-200 p-4 text-center">
           <p className="text-xs text-blue-500 font-medium">Total Intake</p>
