@@ -1,0 +1,18 @@
+import prisma from '@/lib/prisma'
+import { medicationSchema } from '@/lib/validation/clinical'
+
+export async function GET(request, { params }) {
+  const { id } = await params
+  const data = await prisma.medication.findMany({ where: { patientId: id }, orderBy: { createdAt: 'desc' } })
+  return Response.json(data)
+}
+
+export async function POST(request, { params }) {
+  const { id } = await params
+  const body = await request.json()
+  const result = medicationSchema.safeParse(body)
+  if (!result.success) return Response.json({ error: result.error.flatten() }, { status: 400 })
+
+  const data = await prisma.medication.create({ data: { patientId: id, ...result.data } })
+  return Response.json(data, { status: 201 })
+}

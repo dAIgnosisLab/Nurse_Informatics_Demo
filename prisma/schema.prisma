@@ -1,0 +1,408 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Department {
+  ER
+  IPD
+  ICU
+}
+
+enum PatientStatus {
+  Waiting
+  UnderTreatment
+  Admitted
+  Transferred
+  Discharged
+}
+
+enum TriageCode {
+  Red
+  Yellow
+  Green
+}
+
+enum InvestigationType {
+  CBC
+  RBS
+  ECG
+  Xray
+  Other
+}
+
+enum InvestigationStatus {
+  Ordered
+  Pending
+  Completed
+}
+
+enum IOType {
+  Intake
+  Output
+}
+
+enum IOSubtype {
+  OralFluid
+  IVFluid
+  TubeFeeding
+  Urine
+  Vomit
+  Stool
+  Drainage
+}
+
+enum ActivityType {
+  BedRest
+  Sitting
+  Walking
+  AssistedMovement
+}
+
+enum NursingShift {
+  Morning
+  Evening
+  Night
+}
+
+enum FindingStatus {
+  Normal
+  Abnormal
+}
+
+enum ConsciousnessLevel {
+  Alert
+  Confused
+  Drowsy
+  Unconscious
+}
+
+model Patient {
+  id               String        @id @default(cuid())
+  name             String
+  age              Int
+  sex              String
+  department       Department
+  status           PatientStatus @default(Waiting)
+  diagnosis        String?
+  bedNumber        String?
+  ward             String?
+  ipNumber         String?
+  dateOfAdmission  DateTime      @default(now())
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  erIntake          ErIntake?
+  triage            Triage?
+  erVitals          ErVitals?
+  examination       Examination?
+  clinicalDetails   ClinicalDetails?
+  investigations    Investigation[]
+  provisionalDx     ProvisionalDiagnosis?
+  generalCondition  GeneralCondition?
+  vitalSigns        VitalSign[]
+  intakeOutputs     IntakeOutput[]
+  activityLogs      ActivityLog[]
+  medications       Medication[]
+  treatmentCardexes TreatmentCardex[]
+  ivFluids          IvFluid[]
+  bloodTransfusions BloodTransfusion[]
+  dietChart         DietChart?
+  nursingNotes      NursingNote[]
+  procedures        ProcedureRecord[]
+  preOpChecklist    PreOpChecklist?
+  dischargeSummary  DischargeSummary?
+  ventilatorSupport VentilatorSupport?
+  oxygenTherapy     OxygenTherapy?
+  ecgMonitoring     EcgMonitoring?
+  criticalObs       CriticalObservation[]
+  transfers         TransferRecord[]
+
+  @@index([department])
+  @@index([status])
+}
+
+model ErIntake {
+  id              String   @id @default(cuid())
+  patientId       String   @unique
+  patient         Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  broughtBy       String
+  relation        String
+  arrivalDateTime DateTime @default(now())
+  createdAt       DateTime @default(now())
+}
+
+model Triage {
+  id         String     @id @default(cuid())
+  patientId  String     @unique
+  patient    Patient    @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  triageCode TriageCode
+  assignedAt DateTime   @default(now())
+}
+
+model ErVitals {
+  id          String   @id @default(cuid())
+  patientId   String   @unique
+  patient     Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  temperature Float?
+  pulse       Float?
+  respiration Float?
+  bp          String?
+  spo2        Float?
+  gcs         Float?
+  createdAt   DateTime @default(now())
+}
+
+model Examination {
+  id               String        @id @default(cuid())
+  patientId        String        @unique
+  patient          Patient       @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  airwayStatus     FindingStatus?
+  airwayNotes      String?
+  breathingStatus  FindingStatus?
+  breathingNotes   String?
+  circulationStatus FindingStatus?
+  circulationNotes String?
+  pupilsStatus     FindingStatus?
+  pupilsNotes      String?
+  abdomenStatus    FindingStatus?
+  abdomenNotes     String?
+  createdAt        DateTime      @default(now())
+}
+
+model ClinicalDetails {
+  id                  String   @id @default(cuid())
+  patientId           String   @unique
+  patient             Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  chiefComplaints     String
+  pastHistory         String?
+  drugAllergyHistory  String?
+  personalHistory     String?
+  createdAt           DateTime @default(now())
+}
+
+model Investigation {
+  id        String              @id @default(cuid())
+  patientId String
+  patient   Patient             @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  type      InvestigationType
+  status    InvestigationStatus @default(Ordered)
+  notes     String?
+  createdAt DateTime            @default(now())
+}
+
+model ProvisionalDiagnosis {
+  id            String   @id @default(cuid())
+  patientId     String   @unique
+  patient       Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  diagnosisText String
+  createdAt     DateTime @default(now())
+}
+
+model GeneralCondition {
+  id              String             @id @default(cuid())
+  patientId       String             @unique
+  patient         Patient            @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  consciousness   ConsciousnessLevel
+  gcsScore        Int?
+  painLevel       Int?
+  orientedTime    Boolean?
+  orientedPlace   Boolean?
+  orientedPerson  Boolean?
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+}
+
+model VitalSign {
+  id          String   @id @default(cuid())
+  patientId   String
+  patient     Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  temperature Float?
+  pulse       Float?
+  respiration Float?
+  bp          String?
+  spo2        Float?
+  nurseName   String
+  recordedAt  DateTime @default(now())
+}
+
+model IntakeOutput {
+  id         String    @id @default(cuid())
+  patientId  String
+  patient    Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  type       IOType
+  subtype    IOSubtype
+  quantity   Float
+  recordedAt DateTime  @default(now())
+}
+
+model ActivityLog {
+  id           String       @id @default(cuid())
+  patientId    String
+  patient      Patient      @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  activityType ActivityType
+  recordedAt   DateTime     @default(now())
+}
+
+model Medication {
+  id             String   @id @default(cuid())
+  patientId      String
+  patient        Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  drugName       String
+  dose           String
+  route          String
+  timeScheduled  String
+  timeGiven      String?
+  nurseSignature String?
+  createdAt      DateTime @default(now())
+}
+
+model TreatmentCardex {
+  id                    String   @id @default(cuid())
+  patientId             String
+  patient               Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  doctorOrders          String?
+  medicationsPrescribed String?
+  proceduresToDo        String?
+  ivFluidsInstructions  String?
+  specialInstructions   String?
+  nurseInitials         String?
+  date                  DateTime @default(now())
+  createdAt             DateTime @default(now())
+}
+
+model IvFluid {
+  id            String    @id @default(cuid())
+  patientId     String
+  patient       Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  fluidType     String
+  rate          String
+  startTime     DateTime
+  endTime       DateTime?
+  volumeInfused Float?
+  createdAt     DateTime  @default(now())
+}
+
+model BloodTransfusion {
+  id            String    @id @default(cuid())
+  patientId     String
+  patient       Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  bloodGroup    String
+  unitNumber    String
+  startTime     DateTime
+  endTime       DateTime?
+  reactionNotes String?
+  createdAt     DateTime  @default(now())
+}
+
+model DietChart {
+  id            String   @id @default(cuid())
+  patientId     String   @unique
+  patient       Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  dietType      String
+  restrictions  String?
+  feedingMethod String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model NursingNote {
+  id              String       @id @default(cuid())
+  patientId       String
+  patient         Patient      @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  shift           NursingShift
+  observations    String
+  interventions   String?
+  patientResponse String?
+  nurseName       String
+  recordedAt      DateTime     @default(now())
+}
+
+model ProcedureRecord {
+  id            String   @id @default(cuid())
+  patientId     String
+  patient       Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  procedureName String
+  dateTime      DateTime @default(now())
+  performedBy   String
+  remarks       String?
+  createdAt     DateTime @default(now())
+}
+
+model PreOpChecklist {
+  id                       String   @id @default(cuid())
+  patientId                String   @unique
+  patient                  Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  consentTaken             Boolean  @default(false)
+  fastingStatus            String?
+  investigationsCompleted  Boolean  @default(false)
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+}
+
+model DischargeSummary {
+  id                    String   @id @default(cuid())
+  patientId             String   @unique
+  patient               Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  finalDiagnosis        String
+  treatmentSummary      String?
+  medicationsAtDischarge String?
+  advice                String?
+  conditionAtDischarge  String?
+  createdAt             DateTime @default(now())
+}
+
+model VentilatorSupport {
+  id        String   @id @default(cuid())
+  patientId String   @unique
+  patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  inUse     Boolean  @default(false)
+  mode      String?
+  settings  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OxygenTherapy {
+  id             String   @id @default(cuid())
+  patientId      String   @unique
+  patient        Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  flowRate       String
+  deliveryMethod String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model EcgMonitoring {
+  id        String   @id @default(cuid())
+  patientId String   @unique
+  patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  inUse     Boolean  @default(false)
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CriticalObservation {
+  id                      String   @id @default(cuid())
+  patientId               String
+  patient                 Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  suddenChanges           String
+  emergencyInterventions  String?
+  nurseName               String
+  recordedAt              DateTime @default(now())
+}
+
+model TransferRecord {
+  id             String     @id @default(cuid())
+  patientId      String
+  patient        Patient    @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  fromDepartment Department
+  toDepartment   Department
+  transferredAt  DateTime   @default(now())
+  notes          String?
+}
