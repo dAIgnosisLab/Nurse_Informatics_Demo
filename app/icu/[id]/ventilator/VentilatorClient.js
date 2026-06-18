@@ -10,7 +10,7 @@ export default function VentilatorClient({ patientId, existing }) {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
-  const [form, setForm] = useState({ inUse: existing?.inUse ?? false, mode: existing?.mode ?? '', settings: existing?.settings ?? '' })
+  const [form, setForm] = useState({ inUse: existing?.inUse ?? true, mode: existing?.mode ?? 'SIMV', settings: existing?.settings ?? 'FiO₂ 40%, Tidal Volume 500mL, PEEP 5cmH₂O, RR 14' })
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }))
 
   async function handleSave() {

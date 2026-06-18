@@ -10,7 +10,7 @@ export default function GeneralConditionPage() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [form, setForm] = useState({
-    consciousness: 'Alert', gcsScore: '', painLevel: '',
+    consciousness: 'Alert', gcsScore: '15', painLevel: '2',
     orientedTime: true, orientedPlace: true, orientedPerson: true,
   })
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }))

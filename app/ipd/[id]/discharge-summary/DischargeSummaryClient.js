@@ -10,11 +10,11 @@ export default function DischargeSummaryClient({ patientId, existing }) {
   const [error, setError] = useState('')
   const [confirm, setConfirm] = useState(false)
   const [form, setForm] = useState({
-    finalDiagnosis: existing?.finalDiagnosis ?? '',
-    treatmentSummary: existing?.treatmentSummary ?? '',
-    medicationsAtDischarge: existing?.medicationsAtDischarge ?? '',
-    advice: existing?.advice ?? '',
-    conditionAtDischarge: existing?.conditionAtDischarge ?? '',
+    finalDiagnosis: existing?.finalDiagnosis ?? 'Community Acquired Pneumonia',
+    treatmentSummary: existing?.treatmentSummary ?? 'Patient treated with IV antibiotics and supportive care. Condition improved significantly over the admission period.',
+    medicationsAtDischarge: existing?.medicationsAtDischarge ?? 'Tab. Amoxicillin 500mg TDS × 5 days\nTab. Paracetamol 500mg SOS',
+    advice: existing?.advice ?? 'Rest at home. Plenty of fluids. Follow up after 1 week. Return if symptoms worsen.',
+    conditionAtDischarge: existing?.conditionAtDischarge ?? 'Stable and improved',
   })
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }))
 

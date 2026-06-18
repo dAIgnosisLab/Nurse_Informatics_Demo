@@ -5,7 +5,6 @@ import { useRouter, useParams } from 'next/navigation'
 import FormShell from '@/components/forms/FormShell'
 
 const destinations = [
-  { value: 'ER', label: 'ER — Emergency Room', icon: '🚨' },
   { value: 'ICU', label: 'ICU — Intensive Care Unit', icon: '💊' },
 ]
 
@@ -22,6 +21,7 @@ export default function IPDTransferPage() {
 
   async function handleSave() {
     if (!dest) { setError('Please select a destination.'); return }
+    if (!bedNumber.trim()) { setError('Bed number is required.'); return }
     if (!confirm) { setError('Please confirm this transfer.'); return }
     setSaving(true)
     setError('')
@@ -48,15 +48,9 @@ export default function IPDTransferPage() {
             <span className="font-medium">{d.label}</span>
           </button>
         ))}
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Bed Number</label>
-            <input className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" value={bedNumber} onChange={(e) => setBedNumber(e.target.value)} />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Ward</label>
-            <input className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" value={ward} onChange={(e) => setWard(e.target.value)} />
-          </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Bed Number *</label>
+          <input className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" value={bedNumber} onChange={(e) => setBedNumber(e.target.value)} />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Transfer Notes</label>

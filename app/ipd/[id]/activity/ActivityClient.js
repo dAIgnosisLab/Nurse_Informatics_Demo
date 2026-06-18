@@ -16,7 +16,7 @@ const activityColors = {
 export default function ActivityClient({ patientId, initialRows }) {
   const router = useRouter()
   const [rows, setRows] = useState(initialRows)
-  const [selected, setSelected] = useState('')
+  const [selected, setSelected] = useState('BedRest')
   const [saving, setSaving] = useState(false)
 
   async function submit() {
@@ -31,7 +31,7 @@ export default function ActivityClient({ patientId, initialRows }) {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 space-y-5">
-      <Link href={`/ipd/${patientId}`} className="text-sm text-blue-600 hover:underline block">← Patient Dashboard</Link>
+      <Link href={`/ipd/${patientId}`} className="mb-4 inline-flex min-h-11 items-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50">← Patient Dashboard</Link>
       <h2 className="text-xl font-bold text-gray-900">Activity Log</h2>
 
       <div className="bg-white border border-gray-200 rounded-xl p-5">

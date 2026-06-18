@@ -27,7 +27,7 @@ export default async function ERPatientSummary({ params }) {
   const alerts = getVitalAlerts(patient.erVitals)
 
   const steps = [
-    { label: 'ER Intake', done: !!patient.erIntake, href: `/er/${id}/triage` },
+    { label: 'ER Intake', done: !!patient.erIntake, href: null },
     { label: 'Triage', done: !!patient.triage, href: `/er/${id}/triage` },
     { label: 'Initial Vitals', done: !!patient.erVitals, href: `/er/${id}/vitals` },
     { label: 'Examination', done: !!patient.examination, href: `/er/${id}/examination` },
@@ -39,7 +39,7 @@ export default async function ERPatientSummary({ params }) {
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 space-y-5">
       <div className="flex items-center gap-2 mb-2">
-        <Link href="/er" className="text-sm text-blue-600 hover:underline">← ER Dashboard</Link>
+        <Link href="/er" className="inline-flex min-h-11 items-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50">← ER Dashboard</Link>
       </div>
 
       {/* Patient Header */}
@@ -75,29 +75,41 @@ export default async function ERPatientSummary({ params }) {
           <h2 className="font-semibold text-gray-700">Assessment Progress</h2>
         </div>
         <ul className="divide-y divide-gray-100">
-          {steps.map((s) => (
-            <li key={s.label}>
-              <Link href={s.href} className="flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition-colors">
-                <span className="text-sm text-gray-700">{s.label}</span>
-                <span className={`text-xs px-2.5 py-0.5 rounded-full font-medium ${s.done ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
-                  {s.done ? 'Filled' : 'Pending'}
-                </span>
-              </Link>
-            </li>
-          ))}
+          {steps.map((s) => {
+            const badge = (
+              <span className={`text-xs px-2.5 py-0.5 rounded-full font-medium ${s.done ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+                {s.done ? 'Filled' : 'Pending'}
+              </span>
+            )
+            return (
+              <li key={s.label}>
+                {s.href ? (
+                  <Link href={s.href} className="flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition-colors">
+                    <span className="text-sm text-gray-700">{s.label}</span>
+                    {badge}
+                  </Link>
+                ) : (
+                  <div className="flex items-center justify-between px-5 py-3">
+                    <span className="text-sm text-gray-700">{s.label}</span>
+                    {badge}
+                  </div>
+                )}
+              </li>
+            )
+          })}
         </ul>
       </div>
 
       {/* Details Sections */}
       {patient.erIntake && (
-        <Section title="Intake" editHref={`/er/${id}/triage`}>
+        <Section title="Intake">
           <Row label="Brought By" value={patient.erIntake.broughtBy} />
           <Row label="Relation" value={patient.erIntake.relation} />
         </Section>
       )}
 
       {patient.clinicalDetails && (
-        <Section title="Clinical Details" editHref={`/er/${id}/clinical-details`}>
+        <Section title="Clinical Details" viewHref={`/er/${id}/clinical-details`}>
           <Row label="Chief Complaints" value={patient.clinicalDetails.chiefComplaints} />
           {patient.clinicalDetails.pastHistory && <Row label="Past History" value={patient.clinicalDetails.pastHistory} />}
           {patient.clinicalDetails.drugAllergyHistory && <Row label="Drug / Allergy" value={patient.clinicalDetails.drugAllergyHistory} />}
@@ -105,7 +117,7 @@ export default async function ERPatientSummary({ params }) {
       )}
 
       {patient.investigations.length > 0 && (
-        <Section title="Investigations" editHref={`/er/${id}/investigations`}>
+        <Section title="Investigations" viewHref={`/er/${id}/investigations`}>
           <div className="flex flex-wrap gap-2">
             {patient.investigations.map((inv) => (
               <span key={inv.id} className={`px-3 py-1 rounded-full text-xs font-medium ${
@@ -121,7 +133,7 @@ export default async function ERPatientSummary({ params }) {
       )}
 
       {patient.provisionalDx && (
-        <Section title="Provisional Diagnosis" editHref={`/er/${id}/diagnosis`}>
+        <Section title="Provisional Diagnosis" viewHref={`/er/${id}/diagnosis`}>
           <p className="text-sm text-gray-800">{patient.provisionalDx.diagnosisText}</p>
         </Section>
       )}
@@ -145,12 +157,14 @@ export default async function ERPatientSummary({ params }) {
   )
 }
 
-function Section({ title, editHref, children }) {
+function Section({ title, editHref, viewHref, children }) {
+  const href = editHref ?? viewHref
+  const linkLabel = editHref ? 'Edit' : 'View'
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
       <div className="px-5 py-3 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
         <h3 className="font-semibold text-gray-700">{title}</h3>
-        <Link href={editHref} className="text-xs text-blue-600 hover:underline">Edit</Link>
+        {href && <Link href={href} className="inline-flex items-center rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-600 transition hover:bg-sky-50">{linkLabel}</Link>}
       </div>
       <div className="px-5 py-4 space-y-2">{children}</div>
     </div>

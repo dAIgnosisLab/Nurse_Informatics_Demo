@@ -1,57 +1,56 @@
-'use client'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import prisma from '@/lib/prisma'
 
-import { useState } from 'react'
-import { useRouter, useParams } from 'next/navigation'
-import FormShell from '@/components/forms/FormShell'
+export const dynamic = 'force-dynamic'
 
-export default function ClinicalDetailsPage() {
-  const { id } = useParams()
-  const router = useRouter()
-  const [saving, setSaving] = useState(false)
-  const [error, setError] = useState('')
-  const [form, setForm] = useState({ chiefComplaints: '', pastHistory: '', drugAllergyHistory: '', personalHistory: '' })
-  const set = (k, v) => setForm((f) => ({ ...f, [k]: v }))
+export default async function ClinicalDetailsPage({ params }) {
+  const { id } = await params
+  const patient = await prisma.patient.findUnique({
+    where: { id },
+    include: { clinicalDetails: true },
+  })
+  if (!patient) notFound()
 
-  async function handleSave() {
-    if (!form.chiefComplaints) { setError('Chief complaints are required.'); return }
-    setSaving(true)
-    setError('')
-    try {
-      const res = await fetch(`/api/patients/${id}/clinical-details`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      })
-      if (!res.ok) throw new Error('Failed to save')
-      router.push(`/er/${id}/investigations`)
-    } catch (e) {
-      setError(e.message)
-      setSaving(false)
-    }
-  }
-
-  const textArea = (label, key, placeholder, required = false) => (
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">{label}{required && ' *'}</label>
-      <textarea
-        rows={3}
-        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        value={form[key]}
-        onChange={(e) => set(key, e.target.value)}
-        placeholder={placeholder}
-      />
-    </div>
-  )
+  const cd = patient.clinicalDetails
 
   return (
-    <FormShell title="Clinical Details" backHref={`/er/${id}/examination`} backLabel="Examination" onSave={handleSave} saving={saving} saveLabel="Save & Continue →">
-      {error && <p className="mb-4 text-sm text-red-600 bg-red-50 p-3 rounded-lg">{error}</p>}
-      <div className="space-y-4">
-        {textArea('Chief Complaints', 'chiefComplaints', 'e.g. Chest pain, shortness of breath…', true)}
-        {textArea('Past Medical History', 'pastHistory', 'Previous illnesses, surgeries, hospitalisations…')}
-        {textArea('Drug / Allergy History', 'drugAllergyHistory', 'Known drug allergies or adverse reactions…')}
-        {textArea('Personal & Social History', 'personalHistory', 'Smoking, alcohol, occupation…')}
+    <div className="max-w-3xl mx-auto px-4 py-6">
+      <Link
+        href={`/er/${id}`}
+        className="mb-4 inline-flex min-h-11 items-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50"
+      >
+        ← Back to Patient Summary
+      </Link>
+
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div className="border-b border-slate-200 bg-slate-50 px-5 py-5 sm:px-6">
+          <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">Doctor's Record</p>
+          <h1 className="mt-1 text-2xl font-bold text-slate-950">Clinical Details</h1>
+        </div>
+
+        <div className="px-5 py-5 sm:px-6">
+          {!cd ? (
+            <p className="text-sm text-slate-400 italic">Not yet filled by the doctor.</p>
+          ) : (
+            <div className="space-y-4">
+              <Field label="Chief Complaints" value={cd.chiefComplaints} />
+              {cd.pastHistory && <Field label="Past Medical History" value={cd.pastHistory} />}
+              {cd.drugAllergyHistory && <Field label="Drug / Allergy History" value={cd.drugAllergyHistory} />}
+              {cd.personalHistory && <Field label="Personal & Social History" value={cd.personalHistory} />}
+            </div>
+          )}
+        </div>
       </div>
-    </FormShell>
+    </div>
+  )
+}
+
+function Field({ label, value }) {
+  return (
+    <div>
+      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-1">{label}</p>
+      <p className="text-sm text-slate-800 whitespace-pre-wrap">{value}</p>
+    </div>
   )
 }

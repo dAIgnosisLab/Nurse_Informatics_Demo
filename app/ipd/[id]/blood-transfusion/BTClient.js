@@ -18,7 +18,7 @@ export default function BTClient({ patientId, initialRows }) {
   const [rows, setRows] = useState(initialRows)
 
   function AddForm({ onClose }) {
-    const [form, setForm] = useState({ bloodGroup: '', unitNumber: '', startTime: '', endTime: '', reactionNotes: '' })
+    const [form, setForm] = useState({ bloodGroup: 'A+', unitNumber: 'U001', startTime: '', endTime: '', reactionNotes: 'None' })
     const set = (k, v) => setForm((f) => ({ ...f, [k]: v }))
     const [saving, setSaving] = useState(false)
 
@@ -57,7 +57,7 @@ export default function BTClient({ patientId, initialRows }) {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6 space-y-4">
-      <Link href={`/ipd/${patientId}`} className="text-sm text-blue-600 hover:underline block">← Patient Dashboard</Link>
+      <Link href={`/ipd/${patientId}`} className="mb-4 inline-flex min-h-11 items-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50">← Patient Dashboard</Link>
       <LogTable title="Blood Transfusion Records" columns={columns} rows={rows} addForm={(onClose) => <AddForm onClose={onClose} />} emptyMessage="No transfusions recorded." />
     </div>
   )

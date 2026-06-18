@@ -9,7 +9,7 @@ export default function ERVitalsPage() {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
-  const [form, setForm] = useState({ temperature: '', pulse: '', respiration: '', bp: '', spo2: '', gcs: '' })
+  const [form, setForm] = useState({ temperature: '37.2', pulse: '82', respiration: '16', bp: '120/80', spo2: '98', gcs: '15' })
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }))
 
   async function handleSave() {
@@ -30,7 +30,7 @@ export default function ERVitalsPage() {
         body: JSON.stringify(body),
       })
       if (!res.ok) throw new Error('Failed to save')
-      router.push(`/er/${id}/examination`)
+      router.push(`/er/${id}`)
     } catch (e) {
       setError(e.message)
       setSaving(false)
@@ -51,7 +51,7 @@ export default function ERVitalsPage() {
   )
 
   return (
-    <FormShell title="Initial Vitals" backHref={`/er/${id}/triage`} backLabel="Triage" onSave={handleSave} saving={saving} saveLabel="Save & Continue →">
+    <FormShell title="Initial Vitals" backHref={`/er/${id}/triage`} backLabel="Triage" cancelHref={`/er/${id}`} onSave={handleSave} saving={saving} saveLabel="Save & Continue →">
       {error && <p className="mb-4 text-sm text-red-600 bg-red-50 p-3 rounded-lg">{error}</p>}
       <div className="grid grid-cols-2 gap-4">
         {field('Temperature (°C)', 'temperature', '37.0')}

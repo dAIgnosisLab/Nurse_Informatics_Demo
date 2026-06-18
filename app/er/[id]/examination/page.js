@@ -1,8 +1,8 @@
-'use client'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import prisma from '@/lib/prisma'
 
-import { useState } from 'react'
-import { useRouter, useParams } from 'next/navigation'
-import FormShell from '@/components/forms/FormShell'
+export const dynamic = 'force-dynamic'
 
 const systems = [
   { key: 'airway', label: 'Airway' },
@@ -12,69 +12,59 @@ const systems = [
   { key: 'abdomen', label: 'Abdomen' },
 ]
 
-export default function ExaminationPage() {
-  const { id } = useParams()
-  const router = useRouter()
-  const [saving, setSaving] = useState(false)
-  const [error, setError] = useState('')
-  const [form, setForm] = useState(
-    Object.fromEntries(systems.flatMap((s) => [[`${s.key}Status`, 'Normal'], [`${s.key}Notes`, '']]))
-  )
-  const set = (k, v) => setForm((f) => ({ ...f, [k]: v }))
+export default async function ExaminationPage({ params }) {
+  const { id } = await params
+  const patient = await prisma.patient.findUnique({
+    where: { id },
+    include: { examination: true },
+  })
+  if (!patient) notFound()
 
-  async function handleSave() {
-    setSaving(true)
-    setError('')
-    try {
-      const res = await fetch(`/api/patients/${id}/examination`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      })
-      if (!res.ok) throw new Error('Failed to save')
-      router.push(`/er/${id}/clinical-details`)
-    } catch (e) {
-      setError(e.message)
-      setSaving(false)
-    }
-  }
+  const exam = patient.examination
 
   return (
-    <FormShell title="Physical Examination" backHref={`/er/${id}/vitals`} backLabel="Vitals" onSave={handleSave} saving={saving} saveLabel="Save & Continue →">
-      {error && <p className="mb-4 text-sm text-red-600 bg-red-50 p-3 rounded-lg">{error}</p>}
-      <div className="space-y-4">
-        {systems.map((s) => (
-          <div key={s.key} className="border border-gray-200 rounded-lg p-4">
-            <div className="flex items-center justify-between mb-2">
-              <span className="font-medium text-gray-700">{s.label}</span>
-              <div className="flex gap-2">
-                {['Normal', 'Abnormal'].map((v) => (
-                  <button
-                    key={v}
-                    onClick={() => set(`${s.key}Status`, v)}
-                    className={`px-3 py-1 text-sm rounded-full border transition-colors ${
-                      form[`${s.key}Status`] === v
-                        ? v === 'Normal' ? 'bg-green-100 border-green-400 text-green-700 font-medium' : 'bg-red-100 border-red-400 text-red-700 font-medium'
-                        : 'border-gray-300 text-gray-500 hover:bg-gray-50'
-                    }`}
-                  >
-                    {v}
-                  </button>
-                ))}
-              </div>
+    <div className="max-w-3xl mx-auto px-4 py-6">
+      <Link
+        href={`/er/${id}`}
+        className="mb-4 inline-flex min-h-11 items-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50"
+      >
+        ← Back to Patient Summary
+      </Link>
+
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div className="border-b border-slate-200 bg-slate-50 px-5 py-5 sm:px-6">
+          <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">Doctor's Record</p>
+          <h1 className="mt-1 text-2xl font-bold text-slate-950">Physical Examination</h1>
+        </div>
+
+        <div className="px-5 py-5 sm:px-6">
+          {!exam ? (
+            <p className="text-sm text-slate-400 italic">Not yet filled by the doctor.</p>
+          ) : (
+            <div className="space-y-3">
+              {systems.map((s) => {
+                const status = exam[`${s.key}Status`]
+                const notes = exam[`${s.key}Notes`]
+                return (
+                  <div key={s.key} className="border border-gray-200 rounded-lg p-4">
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium text-gray-700">{s.label}</span>
+                      <span className={`px-3 py-1 text-sm rounded-full font-medium ${
+                        status === 'Normal'
+                          ? 'bg-green-100 text-green-700'
+                          : 'bg-red-100 text-red-700'
+                      }`}>
+                        {status}
+                      </span>
+                    </div>
+                    {notes && <p className="mt-2 text-sm text-gray-600">{notes}</p>}
+                  </div>
+                )
+              })}
             </div>
-            {form[`${s.key}Status`] === 'Abnormal' && (
-              <textarea
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2"
-                rows={2}
-                placeholder="Describe findings…"
-                value={form[`${s.key}Notes`]}
-                onChange={(e) => set(`${s.key}Notes`, e.target.value)}
-              />
-            )}
-          </div>
-        ))}
+          )}
+        </div>
       </div>
-    </FormShell>
+    </div>
   )
 }

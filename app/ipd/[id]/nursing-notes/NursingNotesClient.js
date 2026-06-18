@@ -13,7 +13,7 @@ export default function NursingNotesClient({ patientId, initialRows }) {
   const [showAdd, setShowAdd] = useState(false)
 
   function AddForm() {
-    const [form, setForm] = useState({ shift: 'Morning', observations: '', interventions: '', patientResponse: '', nurseName: '' })
+    const [form, setForm] = useState({ shift: 'Morning', observations: 'Patient is conscious and oriented. Vital signs stable. No complaints of distress.', interventions: 'Medications administered as prescribed. IV site checked and patent.', patientResponse: 'Patient tolerated interventions well. Resting comfortably.', nurseName: 'Nurse Maya' })
     const set = (k, v) => setForm((f) => ({ ...f, [k]: v }))
     const [saving, setSaving] = useState(false)
 
@@ -59,7 +59,7 @@ export default function NursingNotesClient({ patientId, initialRows }) {
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 space-y-4">
       <div className="flex items-center justify-between">
-        <Link href={`/ipd/${patientId}`} className="text-sm text-blue-600 hover:underline">← Patient Dashboard</Link>
+        <Link href={`/ipd/${patientId}`} className="inline-flex min-h-11 items-center rounded-xl border border-sky-100 bg-white px-4 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-sky-50">← Patient Dashboard</Link>
         <button onClick={() => setShowAdd(true)} className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700">+ Add Note</button>
       </div>
       <h2 className="text-xl font-bold text-gray-900">Nursing Notes</h2>

@@ -10,7 +10,7 @@ export default function PreOpClient({ patientId, existing }) {
   const [error, setError] = useState('')
   const [form, setForm] = useState({
     consentTaken: existing?.consentTaken ?? false,
-    fastingStatus: existing?.fastingStatus ?? '',
+    fastingStatus: existing?.fastingStatus ?? 'NPO since midnight',
     investigationsCompleted: existing?.investigationsCompleted ?? false,
   })
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }))

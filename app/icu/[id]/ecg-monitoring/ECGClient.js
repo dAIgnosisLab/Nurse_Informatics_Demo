@@ -8,7 +8,7 @@ export default function ECGClient({ patientId, existing }) {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
-  const [form, setForm] = useState({ inUse: existing?.inUse ?? false, notes: existing?.notes ?? '' })
+  const [form, setForm] = useState({ inUse: existing?.inUse ?? true, notes: existing?.notes ?? 'Sinus rhythm, rate 80/min. No ST changes noted.' })
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }))
 
   async function handleSave() {

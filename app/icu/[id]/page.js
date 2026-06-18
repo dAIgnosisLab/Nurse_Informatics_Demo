@@ -59,11 +59,11 @@ export default async function ICUPatientDashboard({ params }) {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6 space-y-5">
-      <div className="flex items-center justify-between">
-        <Link href="/icu" className="text-sm text-blue-600 hover:underline">← ICU Dashboard</Link>
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <Link href="/icu" className="inline-flex min-h-11 items-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50">← ICU Dashboard</Link>
         <div className="flex gap-2">
-          <Link href={`/icu/${id}/transfer`} className="text-sm px-3 py-1.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700">Transfer</Link>
-          <Link href={`/ipd/${id}/discharge-summary`} className="text-sm px-3 py-1.5 bg-gray-700 text-white rounded-lg hover:bg-gray-800">Discharge</Link>
+          <Link href={`/icu/${id}/transfer`} className="inline-flex min-h-11 items-center px-4 bg-purple-600 text-white text-sm font-medium rounded-xl hover:bg-purple-700 transition-colors">Transfer Patient →</Link>
+          <Link href={`/ipd/${id}/discharge-summary`} className="inline-flex min-h-11 items-center px-4 bg-gray-700 text-white text-sm font-medium rounded-xl hover:bg-gray-800 transition-colors">Discharge</Link>
         </div>
       </div>
 
@@ -95,7 +95,7 @@ export default async function ICUPatientDashboard({ params }) {
         <div className="bg-red-50 border border-red-200 rounded-xl p-5">
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-bold text-red-700">Critical Observations</h3>
-            <Link href={`/icu/${id}/critical-observations`} className="text-xs text-red-600 hover:underline">View all</Link>
+            <Link href={`/icu/${id}/critical-observations`} className="inline-flex items-center rounded-lg border border-red-200 bg-white px-2.5 py-1 text-xs font-semibold text-red-600 transition hover:bg-red-50">View all</Link>
           </div>
           <div className="space-y-2">
             {p.criticalObs.map((obs) => (

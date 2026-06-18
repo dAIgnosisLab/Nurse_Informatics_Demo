@@ -24,6 +24,8 @@ export default function ERTransferPage() {
 
   async function handleSave() {
     if (!isDischarge && !dest) { setError('Please select a destination department.'); return }
+    if (!isDischarge && !bedNumber.trim()) { setError('Bed number is required.'); return }
+    if (!isDischarge && dest === 'IPD' && !ward.trim()) { setError('Ward is required for IPD transfer.'); return }
     if (!confirm) { setError('Please confirm this action.'); return }
 
     setSaving(true)
@@ -81,15 +83,17 @@ export default function ERTransferPage() {
               <span className="font-medium">{d.label}</span>
             </button>
           ))}
-          <div className="grid grid-cols-2 gap-4 pt-2">
+          <div className={`grid gap-4 pt-2 ${dest === 'ICU' ? 'grid-cols-1' : 'grid-cols-2'}`}>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Bed Number</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Bed Number *</label>
               <input className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" value={bedNumber} onChange={(e) => setBedNumber(e.target.value)} placeholder="e.g. B12" />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Ward</label>
-              <input className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" value={ward} onChange={(e) => setWard(e.target.value)} placeholder="e.g. General" />
-            </div>
+            {dest !== 'ICU' && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Ward *</label>
+                <input className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" value={ward} onChange={(e) => setWard(e.target.value)} placeholder="e.g. General" />
+              </div>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Transfer Notes</label>

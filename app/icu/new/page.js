@@ -8,7 +8,7 @@ export default function AdmitICUPage() {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
-  const [form, setForm] = useState({ name: '', age: '', sex: 'Male', diagnosis: '', bedNumber: '', ward: '' })
+  const [form, setForm] = useState({ name: 'Ram Bahadur Thapa', age: '58', sex: 'Male', diagnosis: 'Septic Shock', bedNumber: 'ICU-3', ward: '' })
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }))
 
   async function handleSave() {

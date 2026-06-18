@@ -36,7 +36,7 @@ export default function TriagePage() {
   }
 
   return (
-    <FormShell title="Triage Assessment" backHref={`/er/${id}`} backLabel="Patient Summary" onSave={handleSave} saving={saving} saveLabel="Save & Continue →">
+    <FormShell title="Triage Assessment" backHref={`/er/${id}`} backLabel="Patient Summary" cancelHref={`/er/${id}/vitals`} onSave={handleSave} saving={saving} saveLabel="Save & Continue →">
       {error && <p className="mb-4 text-sm text-red-600 bg-red-50 p-3 rounded-lg">{error}</p>}
       <div className="space-y-3">
         <p className="text-sm text-gray-600 mb-4">Select the triage priority code for this patient:</p>

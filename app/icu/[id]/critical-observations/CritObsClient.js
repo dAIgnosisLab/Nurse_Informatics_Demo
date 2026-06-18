@@ -11,7 +11,7 @@ export default function CritObsClient({ patientId, initialRows }) {
   const [showAdd, setShowAdd] = useState(false)
 
   function AddForm() {
-    const [form, setForm] = useState({ suddenChanges: '', emergencyInterventions: '', nurseName: '' })
+    const [form, setForm] = useState({ suddenChanges: 'Sudden drop in blood pressure noted. Patient became restless and diaphoretic.', emergencyInterventions: 'IV bolus 250mL NS given. Physician notified immediately. Vitals monitored every 15 min.', nurseName: 'Nurse Maya' })
     const set = (k, v) => setForm((f) => ({ ...f, [k]: v }))
     const [saving, setSaving] = useState(false)
 
@@ -51,7 +51,7 @@ export default function CritObsClient({ patientId, initialRows }) {
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 space-y-4">
       <div className="flex items-center justify-between">
-        <Link href={`/icu/${patientId}`} className="text-sm text-blue-600 hover:underline">← ICU Dashboard</Link>
+        <Link href={`/icu/${patientId}`} className="inline-flex min-h-11 items-center rounded-xl border border-sky-100 bg-white px-4 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-sky-50">← ICU Dashboard</Link>
         <button onClick={() => setShowAdd(true)} className="px-4 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700">+ Add Observation</button>
       </div>
       <h2 className="text-xl font-bold text-gray-900">Critical Observations</h2>

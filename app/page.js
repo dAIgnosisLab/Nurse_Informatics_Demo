@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import prisma from '@/lib/prisma'
 
+export const dynamic = 'force-dynamic'
+
 async function getStats() {
   try {
     const [er, ipd, icu] = await Promise.all([
@@ -19,37 +21,43 @@ const departments = [
     key: 'er',
     name: 'Emergency Room',
     shortName: 'ER',
-    action: 'New patient, triage, first vitals',
+    description: 'Triage, initial assessment, first vitals and emergency intake',
     href: '/er',
     newHref: '/er/new',
-    color: 'border-red-200 hover:border-red-300 hover:bg-red-50',
+    border: 'border-red-200 hover:border-red-300',
     badge: 'bg-red-600 text-white',
-    button: 'bg-red-600 hover:bg-red-700 text-white',
-    soft: 'bg-red-50 text-red-700 border-red-100',
+    stat: 'text-red-600',
+    newBtn: 'bg-red-600 hover:bg-red-700 text-white',
+    listBtn: 'text-red-700 hover:bg-red-50',
+    divider: 'bg-red-100',
   },
   {
     key: 'ipd',
     name: 'Ward Care',
     shortName: 'IPD',
-    action: 'Admitted patients, medicines, nursing notes',
+    description: 'Admitted patients, medications, nursing notes, I/O balance',
     href: '/ipd',
     newHref: '/ipd/new',
-    color: 'border-blue-200 hover:border-blue-300 hover:bg-blue-50',
+    border: 'border-blue-200 hover:border-blue-300',
     badge: 'bg-blue-600 text-white',
-    button: 'bg-blue-600 hover:bg-blue-700 text-white',
-    soft: 'bg-blue-50 text-blue-700 border-blue-100',
+    stat: 'text-blue-600',
+    newBtn: 'bg-blue-600 hover:bg-blue-700 text-white',
+    listBtn: 'text-blue-700 hover:bg-blue-50',
+    divider: 'bg-blue-100',
   },
   {
     key: 'icu',
     name: 'Critical Care',
     shortName: 'ICU',
-    action: 'ICU monitoring, oxygen, ventilator support',
+    description: 'ICU monitoring, ventilator, oxygen therapy, critical observations',
     href: '/icu',
     newHref: '/icu/new',
-    color: 'border-violet-200 hover:border-violet-300 hover:bg-violet-50',
+    border: 'border-violet-200 hover:border-violet-300',
     badge: 'bg-violet-600 text-white',
-    button: 'bg-violet-600 hover:bg-violet-700 text-white',
-    soft: 'bg-violet-50 text-violet-700 border-violet-100',
+    stat: 'text-violet-600',
+    newBtn: 'bg-violet-600 hover:bg-violet-700 text-white',
+    listBtn: 'text-violet-700 hover:bg-violet-50',
+    divider: 'bg-violet-100',
   },
 ]
 
@@ -58,91 +66,80 @@ export default async function HomePage() {
   const totalActive = stats.er + stats.ipd + stats.icu
 
   return (
-    <div className="min-h-full bg-slate-50">
-      <section className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">Nurse Informatics</p>
-              <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-                Choose your care area
-              </h1>
-              <p className="mt-3 max-w-2xl text-base text-slate-600">
-                Simple patient worklists for emergency, ward, and critical care teams.
-              </p>
-            </div>
+    <div className="min-h-full">
+      <section className="mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-10">
 
-            <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
-              <p className="text-sm font-medium text-slate-500">Active patients</p>
-              <p className="text-3xl font-bold text-slate-950">{totalActive}</p>
-            </div>
+        {/* Hero Banner */}
+        <div className="mb-8 overflow-hidden rounded-2xl border border-sky-100 bg-white shadow-sm">
+          <div className="bg-linear-to-br from-cyan-700 to-cyan-600 px-6 py-8 sm:px-8">
+            <p className="text-xs font-bold uppercase tracking-widest text-cyan-200">Clinical Nursing Station</p>
+            <h1 className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              Patient Care Dashboard
+            </h1>
+            <p className="mt-2 text-sm text-cyan-100">
+              Real-time patient management for emergency, ward, and critical care nursing teams.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-6 border-t border-sky-100 px-6 py-4 sm:px-8">
+            <Stat label="Total Active" value={totalActive} color="text-cyan-700" />
+            <div className="w-px bg-sky-100" />
+            <Stat label="Emergency" value={stats.er} color="text-red-600" />
+            <Stat label="Ward" value={stats.ipd} color="text-blue-600" />
+            <Stat label="ICU" value={stats.icu} color="text-violet-600" />
           </div>
         </div>
 
-        <div className="mt-5 grid grid-cols-1 gap-4 lg:grid-cols-3">
-          {departments.map((department) => (
-            <DepartmentCard
-              key={department.key}
-              department={department}
-              activeCount={stats[department.key]}
-            />
+        {/* Department Cards */}
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+          {departments.map((dept) => (
+            <div
+              key={dept.key}
+              className={`overflow-hidden rounded-2xl border-2 bg-white shadow-sm transition hover:shadow-md ${dept.border}`}
+            >
+              <div className="p-5">
+                <div className="flex items-start justify-between gap-3">
+                  <div className={`inline-flex h-11 w-11 items-center justify-center rounded-xl text-sm font-black ${dept.badge}`}>
+                    {dept.shortName}
+                  </div>
+                  <div className="text-right">
+                    <p className={`text-3xl font-black leading-none ${dept.stat}`}>{stats[dept.key]}</p>
+                    <p className="mt-1 text-xs font-medium text-slate-400">active</p>
+                  </div>
+                </div>
+                <h2 className="mt-4 text-xl font-bold text-slate-900">{dept.name}</h2>
+                <p className="mt-1.5 text-sm leading-relaxed text-slate-500">{dept.description}</p>
+              </div>
+
+              <div className={`h-px ${dept.divider}`} />
+              <div className="grid grid-cols-2">
+                <Link
+                  href={dept.href}
+                  className={`py-3 text-center text-sm font-semibold transition ${dept.listBtn}`}
+                >
+                  Open List
+                </Link>
+                <div className={`w-px ${dept.divider}`} />
+                <Link
+                  href={dept.newHref}
+                  className={`py-3 text-center text-sm font-semibold transition ${dept.newBtn}`}
+                >
+                  + New Patient
+                </Link>
+              </div>
+            </div>
           ))}
         </div>
 
-        <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-          <h2 className="text-lg font-bold text-slate-950">Quick view</h2>
-          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-            {departments.map((department) => (
-              <Link
-                key={department.key}
-                href={department.href}
-                className={`flex items-center justify-between rounded-xl border px-4 py-3 transition ${department.soft}`}
-              >
-                <span className="text-sm font-semibold">{department.shortName}</span>
-                <span className="text-sm">{stats[department.key]} active</span>
-              </Link>
-            ))}
-          </div>
-        </div>
       </section>
     </div>
   )
 }
 
-function DepartmentCard({ department, activeCount }) {
+function Stat({ label, value, color }) {
   return (
-    <div className={`rounded-2xl border-2 bg-white p-5 shadow-sm transition ${department.color}`}>
-      <Link href={department.href} className="block">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <div className={`inline-flex h-12 w-12 items-center justify-center rounded-xl text-lg font-black ${department.badge}`}>
-              {department.shortName}
-            </div>
-            <h2 className="mt-4 text-2xl font-bold text-slate-950">{department.name}</h2>
-            <p className="mt-2 text-sm leading-6 text-slate-600">{department.action}</p>
-          </div>
-
-          <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-right">
-            <p className="text-2xl font-bold text-slate-950">{activeCount}</p>
-            <p className="text-xs font-medium text-slate-500">active</p>
-          </div>
-        </div>
-      </Link>
-
-      <div className="mt-5 grid grid-cols-2 gap-3">
-        <Link
-          href={department.href}
-          className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-center text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
-        >
-          Open list
-        </Link>
-        <Link
-          href={department.newHref}
-          className={`rounded-xl px-4 py-3 text-center text-sm font-semibold transition ${department.button}`}
-        >
-          New patient
-        </Link>
-      </div>
+    <div>
+      <p className={`text-2xl font-black leading-none ${color}`}>{value}</p>
+      <p className="mt-1 text-xs font-medium text-slate-500">{label}</p>
     </div>
   )
 }

@@ -1,69 +1,60 @@
-'use client'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import prisma from '@/lib/prisma'
 
-import { useState } from 'react'
-import { useRouter, useParams } from 'next/navigation'
-import FormShell from '@/components/forms/FormShell'
+export const dynamic = 'force-dynamic'
 
-const INV_TYPES = ['CBC', 'RBS', 'ECG', 'Xray', 'Other']
+const statusColors = {
+  Ordered: 'bg-gray-100 text-gray-600',
+  Pending: 'bg-yellow-100 text-yellow-700',
+  Completed: 'bg-green-100 text-green-700',
+}
 
-export default function InvestigationsPage() {
-  const { id } = useParams()
-  const router = useRouter()
-  const [saving, setSaving] = useState(false)
-  const [error, setError] = useState('')
-  const [items, setItems] = useState(INV_TYPES.map((t) => ({ type: t, checked: false, notes: '' })))
+export default async function InvestigationsPage({ params }) {
+  const { id } = await params
+  const patient = await prisma.patient.findUnique({
+    where: { id },
+    include: { investigations: { orderBy: { createdAt: 'asc' } } },
+  })
+  if (!patient) notFound()
 
-  const toggle = (i) => setItems((prev) => prev.map((item, idx) => idx === i ? { ...item, checked: !item.checked } : item))
-  const setNotes = (i, v) => setItems((prev) => prev.map((item, idx) => idx === i ? { ...item, notes: v } : item))
-
-  async function handleSave() {
-    const selected = items.filter((i) => i.checked)
-    if (selected.length === 0) { setError('Select at least one investigation.'); return }
-    setSaving(true)
-    setError('')
-    try {
-      await Promise.all(
-        selected.map((item) =>
-          fetch(`/api/patients/${id}/investigations`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ type: item.type, status: 'Ordered', notes: item.notes || undefined }),
-          })
-        )
-      )
-      router.push(`/er/${id}/diagnosis`)
-    } catch (e) {
-      setError(e.message)
-      setSaving(false)
-    }
-  }
+  const investigations = patient.investigations
 
   return (
-    <FormShell title="Investigations" backHref={`/er/${id}/clinical-details`} backLabel="Clinical Details" onSave={handleSave} saving={saving} saveLabel="Save & Continue →">
-      {error && <p className="mb-4 text-sm text-red-600 bg-red-50 p-3 rounded-lg">{error}</p>}
-      <div className="space-y-3">
-        {items.map((item, i) => (
-          <div key={item.type} className={`border rounded-lg p-3 transition-colors ${item.checked ? 'border-blue-300 bg-blue-50' : 'border-gray-200'}`}>
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={item.checked}
-                onChange={() => toggle(i)}
-                className="w-4 h-4 text-blue-600"
-              />
-              <span className={`font-medium ${item.checked ? 'text-blue-700' : 'text-gray-700'}`}>{item.type}</span>
-            </label>
-            {item.checked && (
-              <input
-                className="mt-2 w-full border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Notes (optional)"
-                value={item.notes}
-                onChange={(e) => setNotes(i, e.target.value)}
-              />
-            )}
-          </div>
-        ))}
+    <div className="max-w-3xl mx-auto px-4 py-6">
+      <Link
+        href={`/er/${id}`}
+        className="mb-4 inline-flex min-h-11 items-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50"
+      >
+        ← Back to Patient Summary
+      </Link>
+
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div className="border-b border-slate-200 bg-slate-50 px-5 py-5 sm:px-6">
+          <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">Doctor's Record</p>
+          <h1 className="mt-1 text-2xl font-bold text-slate-950">Investigations</h1>
+        </div>
+
+        <div className="px-5 py-5 sm:px-6">
+          {investigations.length === 0 ? (
+            <p className="text-sm text-slate-400 italic">No investigations ordered yet.</p>
+          ) : (
+            <div className="space-y-3">
+              {investigations.map((inv) => (
+                <div key={inv.id} className="border border-gray-200 rounded-lg p-4">
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-gray-800">{inv.type}</span>
+                    <span className={`px-3 py-1 text-xs rounded-full font-medium ${statusColors[inv.status] ?? 'bg-gray-100 text-gray-600'}`}>
+                      {inv.status}
+                    </span>
+                  </div>
+                  {inv.notes && <p className="mt-1.5 text-sm text-gray-500">{inv.notes}</p>}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
-    </FormShell>
+    </div>
   )
 }

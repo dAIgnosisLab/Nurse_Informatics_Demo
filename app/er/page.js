@@ -2,6 +2,8 @@ import Link from 'next/link'
 import prisma from '@/lib/prisma'
 import PatientCard from '@/components/PatientCard'
 
+export const dynamic = 'force-dynamic'
+
 const triageOrder = { Red: 0, Yellow: 1, Green: 2, null: 3 }
 
 async function getERPatients() {
@@ -35,30 +37,40 @@ export default async function ERDashboard() {
   const greenCount = sorted.filter((p) => p.triage?.triageCode === 'Green').length
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Emergency Room</h1>
-          <div className="flex gap-3 mt-1 text-sm">
-            {redCount > 0 && <span className="text-red-600 font-medium">● {redCount} Red</span>}
-            {yellowCount > 0 && <span className="text-yellow-600 font-medium">● {yellowCount} Yellow</span>}
-            {greenCount > 0 && <span className="text-green-600 font-medium">● {greenCount} Green</span>}
-            {sorted.length === 0 && <span className="text-gray-400">No active patients</span>}
+    <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6">
+
+      {/* Page header */}
+      <div className="mb-5 overflow-hidden rounded-2xl border border-sky-100 bg-white shadow-sm">
+        <div className="flex items-center justify-between gap-3 flex-wrap px-5 py-4 sm:px-6">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="inline-block h-2.5 w-2.5 rounded-full bg-red-500 animate-pulse" />
+              <p className="text-xs font-bold uppercase tracking-widest text-red-600">Emergency Room</p>
+            </div>
+            <h1 className="mt-0.5 text-2xl font-bold text-slate-900">Active Patients</h1>
+            <div className="mt-1.5 flex flex-wrap gap-3 text-sm">
+              {redCount > 0 && <span className="font-semibold text-red-600">● {redCount} Immediate</span>}
+              {yellowCount > 0 && <span className="font-semibold text-yellow-600">● {yellowCount} Urgent</span>}
+              {greenCount > 0 && <span className="font-semibold text-green-600">● {greenCount} Non-urgent</span>}
+              {sorted.length === 0 && <span className="text-slate-400">No active patients</span>}
+            </div>
           </div>
+          <Link
+            href="/er/new"
+            className="inline-flex min-h-11 items-center rounded-xl bg-red-600 px-5 text-sm font-bold text-white transition hover:bg-red-700"
+          >
+            + New Patient
+          </Link>
         </div>
-        <Link
-          href="/er/new"
-          className="px-4 py-2 bg-red-600 text-white text-sm font-semibold rounded-lg hover:bg-red-700 transition-colors"
-        >
-          + New Patient
-        </Link>
       </div>
 
       {sorted.length === 0 ? (
-        <div className="text-center py-16 text-gray-400">
-          <p className="text-4xl mb-3">🏥</p>
-          <p className="text-lg font-medium">No patients in ER</p>
-          <p className="text-sm mt-1">Click &quot;+ New Patient&quot; to register a patient</p>
+        <div className="rounded-2xl border border-sky-100 bg-white py-16 text-center shadow-sm">
+          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-red-50 text-2xl font-black text-red-300">
+            ER
+          </div>
+          <p className="text-base font-semibold text-slate-600">No patients in the Emergency Room</p>
+          <p className="mt-1 text-sm text-slate-400">Click &quot;+ New Patient&quot; to register a patient</p>
         </div>
       ) : (
         <div className="space-y-3">

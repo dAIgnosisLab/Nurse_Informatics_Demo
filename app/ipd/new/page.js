@@ -8,7 +8,7 @@ export default function AdmitIPDPage() {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
-  const [form, setForm] = useState({ name: '', age: '', sex: 'Male', diagnosis: '', bedNumber: '', ward: '', ipNumber: '' })
+  const [form, setForm] = useState({ name: 'Ram Bahadur Thapa', age: '45', sex: 'Male', diagnosis: 'Community Acquired Pneumonia', bedNumber: 'B12', ward: 'General', ipNumber: 'IPD-001' })
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }))
 
   async function handleSave() {

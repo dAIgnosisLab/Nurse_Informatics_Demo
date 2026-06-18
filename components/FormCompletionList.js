@@ -5,41 +5,35 @@ export default function FormCompletionList({ forms }) {
   const total = forms.length
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <div className="border-b border-slate-200 bg-slate-50 px-4 py-4">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <h3 className="text-base font-bold text-slate-950">Care steps</h3>
-            <p className="mt-1 text-sm text-slate-500">Open each step, fill it, then save.</p>
-          </div>
-          <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800">
-            {completed}/{total} done
-          </span>
+    <section className="overflow-hidden rounded-2xl border border-sky-100 bg-white shadow-sm">
+      <div className="flex items-center justify-between gap-3 border-b border-sky-100 bg-sky-50 px-5 py-4">
+        <div>
+          <h3 className="text-base font-bold text-slate-900">Care Steps</h3>
+          <p className="mt-0.5 text-sm text-slate-500">Open each step, fill it, then save.</p>
         </div>
+        <span className="rounded-full bg-cyan-100 px-3 py-1 text-xs font-bold text-cyan-800">
+          {completed}/{total} done
+        </span>
       </div>
 
-      <ul className="divide-y divide-slate-100">
+      <ul className="divide-y divide-sky-50">
         {forms.map((form, index) => (
           <li key={form.label}>
             <Link
               href={form.href}
-              className="flex min-h-16 items-center justify-between gap-3 px-4 py-3 transition hover:bg-blue-50/70"
+              className="flex min-h-14 items-center justify-between gap-3 px-5 py-3 transition hover:bg-sky-50"
             >
               <div className="flex min-w-0 items-center gap-3">
-                <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-black ${
+                <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-black ${
                   form.filled ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
                 }`}>
                   {index + 1}
                 </span>
                 <span className="truncate text-sm font-semibold text-slate-800">{form.label}</span>
               </div>
-              <span
-                className={`shrink-0 rounded-full px-3 py-1 text-xs font-bold ${
-                  form.filled
-                    ? 'bg-emerald-100 text-emerald-700'
-                    : 'bg-amber-100 text-amber-800'
-                }`}
-              >
+              <span className={`shrink-0 rounded-full px-3 py-1 text-xs font-bold ${
+                form.filled ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-800'
+              }`}>
                 {form.filled ? 'Done' : 'To do'}
               </span>
             </Link>

@@ -9,8 +9,8 @@ export default function NewERPatient() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [form, setForm] = useState({
-    name: '', age: '', sex: 'Male',
-    broughtBy: '', relation: '',
+    name: 'Ram Bahadur Thapa', age: '35', sex: 'Male',
+    broughtBy: 'Sita Thapa', relation: 'Wife',
   })
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }))

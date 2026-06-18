@@ -18,7 +18,7 @@ export default function IVFluidsClient({ patientId, initialRows }) {
   const [rows, setRows] = useState(initialRows)
 
   function AddForm({ onClose }) {
-    const [form, setForm] = useState({ fluidType: '', rate: '', startTime: '', endTime: '', volumeInfused: '' })
+    const [form, setForm] = useState({ fluidType: 'Normal Saline 0.9%', rate: '80 mL/hr', startTime: '', endTime: '', volumeInfused: '500' })
     const set = (k, v) => setForm((f) => ({ ...f, [k]: v }))
     const [saving, setSaving] = useState(false)
 
@@ -53,7 +53,7 @@ export default function IVFluidsClient({ patientId, initialRows }) {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6 space-y-4">
-      <Link href={`/ipd/${patientId}`} className="text-sm text-blue-600 hover:underline block">← Patient Dashboard</Link>
+      <Link href={`/ipd/${patientId}`} className="mb-4 inline-flex min-h-11 items-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50">← Patient Dashboard</Link>
       <LogTable title="IV Fluids" columns={columns} rows={rows} addForm={(onClose) => <AddForm onClose={onClose} />} emptyMessage="No IV fluids recorded." />
     </div>
   )

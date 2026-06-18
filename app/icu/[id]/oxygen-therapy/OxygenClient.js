@@ -10,7 +10,7 @@ export default function OxygenClient({ patientId, existing }) {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
-  const [form, setForm] = useState({ flowRate: existing?.flowRate ?? '', deliveryMethod: existing?.deliveryMethod ?? '' })
+  const [form, setForm] = useState({ flowRate: existing?.flowRate ?? '4 L/min', deliveryMethod: existing?.deliveryMethod ?? 'Nasal Cannula' })
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }))
 
   async function handleSave() {

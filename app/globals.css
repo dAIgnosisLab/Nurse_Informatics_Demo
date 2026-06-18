@@ -1,8 +1,11 @@
 @import "tailwindcss";
 
+/* Class-based dark mode: applies dark: variants when <html> has class="dark" */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --background: #f0f9ff;
+  --foreground: #0c1f2e;
   --font-sans: ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, monospace;
 }
@@ -25,8 +28,8 @@ html {
 }
 
 body {
-  background-color: #f8fafc;
-  color: #0f172a;
+  background-color: #f0f9ff;
+  color: #0c1f2e;
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 16px;
@@ -35,7 +38,7 @@ body {
 }
 
 label {
-  color: #334155;
+  color: #0c4a6e;
   font-weight: 650;
 }
 
@@ -43,10 +46,10 @@ input:not([type="checkbox"]):not([type="radio"]),
 select,
 textarea {
   min-height: 2.75rem;
-  border-color: #cbd5e1;
+  border-color: #bae6fd;
   border-radius: 0.75rem;
   background-color: #ffffff;
-  color: #0f172a;
+  color: #0c1f2e;
   font-size: 1rem;
   line-height: 1.5;
 }
@@ -58,10 +61,10 @@ textarea {
 input:not([type="checkbox"]):not([type="radio"]):focus,
 select:focus,
 textarea:focus {
-  border-color: #2563eb;
+  border-color: #0891b2;
   outline: 2px solid transparent;
   outline-offset: 2px;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+  box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.18);
 }
 
 button,
@@ -81,14 +84,63 @@ button:disabled {
   cursor: not-allowed;
 }
 
-/* Force light mode because clinical systems should not invert colors. */
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: light;
-  }
+/* ── Dark mode ─────────────────────────────────────────── */
+/* Applied when <html class="dark"> is set by ThemeToggle  */
 
-  body {
-    background-color: #f8fafc;
-    color: #0f172a;
-  }
+html.dark {
+  color-scheme: dark;
 }
+
+html.dark body {
+  background-color: #0f172a;
+  color: #e2e8f0;
+}
+
+/* Cards / panels */
+html.dark .bg-white       { background-color: #1e293b; }
+html.dark .bg-sky-50      { background-color: #0d1f30; }
+html.dark .bg-slate-50    { background-color: #162032; }
+html.dark .bg-gray-50     { background-color: #162032; }
+
+/* Borders */
+html.dark .border-sky-100    { border-color: #1e3a5f; }
+html.dark .border-slate-200  { border-color: #334155; }
+html.dark .border-slate-100  { border-color: #1e293b; }
+html.dark .border-gray-200   { border-color: #334155; }
+html.dark .border-gray-100   { border-color: #1e293b; }
+
+/* Text */
+html.dark .text-slate-950 { color: #f8fafc; }
+html.dark .text-slate-900 { color: #f1f5f9; }
+html.dark .text-slate-800 { color: #e2e8f0; }
+html.dark .text-slate-700 { color: #cbd5e1; }
+html.dark .text-slate-600 { color: #94a3b8; }
+html.dark .text-slate-500 { color: #64748b; }
+html.dark .text-gray-900  { color: #f1f5f9; }
+html.dark .text-gray-700  { color: #cbd5e1; }
+html.dark .text-gray-600  { color: #94a3b8; }
+html.dark .text-gray-500  { color: #64748b; }
+html.dark .text-gray-400  { color: #475569; }
+
+/* Divide lines */
+html.dark .divide-sky-50  > * + * { border-color: #1e293b; }
+html.dark .divide-slate-100 > * + * { border-color: #1e293b; }
+
+/* Inputs */
+html.dark input:not([type="checkbox"]):not([type="radio"]),
+html.dark select,
+html.dark textarea {
+  background-color: #1e293b;
+  border-color: #334155;
+  color: #f1f5f9;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #475569;
+}
+
+/* Hover overrides */
+html.dark .hover\:bg-slate-50:hover  { background-color: #1e293b; }
+html.dark .hover\:bg-sky-50:hover    { background-color: #0d1f30; }
+html.dark .hover\:bg-slate-100:hover { background-color: #334155; }

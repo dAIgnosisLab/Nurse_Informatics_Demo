@@ -11,7 +11,7 @@ export default function CardexClient({ patientId, initialRows }) {
   const [showAdd, setShowAdd] = useState(false)
 
   function AddForm() {
-    const [form, setForm] = useState({ doctorOrders: '', medicationsPrescribed: '', proceduresToDo: '', ivFluidsInstructions: '', specialInstructions: '', nurseInitials: '' })
+    const [form, setForm] = useState({ doctorOrders: 'Continue current medications. Monitor vitals every 4 hours. Encourage oral fluids.', medicationsPrescribed: 'Tab. Paracetamol 500mg TDS\nInj. Amoxicillin 1g IV BD', proceduresToDo: 'IV cannula care. Wound dressing if required.', ivFluidsInstructions: 'NS 0.9% 500mL @ 80mL/hr', specialInstructions: 'Bed rest. Monitor urine output hourly.', nurseInitials: 'RN' })
     const set = (k, v) => setForm((f) => ({ ...f, [k]: v }))
     const [saving, setSaving] = useState(false)
 
@@ -47,7 +47,7 @@ export default function CardexClient({ patientId, initialRows }) {
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 space-y-4">
       <div className="flex items-center justify-between">
-        <Link href={`/ipd/${patientId}`} className="text-sm text-blue-600 hover:underline">← Patient Dashboard</Link>
+        <Link href={`/ipd/${patientId}`} className="inline-flex min-h-11 items-center rounded-xl border border-sky-100 bg-white px-4 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-sky-50">← Patient Dashboard</Link>
         <button onClick={() => setShowAdd(true)} className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700">+ Add Entry</button>
       </div>
       <h2 className="text-xl font-bold text-gray-900">Treatment Cardex</h2>

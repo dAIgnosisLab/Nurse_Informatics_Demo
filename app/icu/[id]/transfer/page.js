@@ -6,7 +6,6 @@ import FormShell from '@/components/forms/FormShell'
 
 const destinations = [
   { value: 'IPD', label: 'IPD — In-Patient Department', icon: '🏥' },
-  { value: 'ER', label: 'ER — Emergency Room', icon: '🚨' },
 ]
 
 export default function ICUTransferPage() {
@@ -22,6 +21,8 @@ export default function ICUTransferPage() {
 
   async function handleSave() {
     if (!dest) { setError('Please select a destination.'); return }
+    if (!bedNumber.trim()) { setError('Bed number is required.'); return }
+    if (!ward.trim()) { setError('Ward is required.'); return }
     if (!confirm) { setError('Please confirm this transfer.'); return }
     setSaving(true)
     setError('')
@@ -49,11 +50,11 @@ export default function ICUTransferPage() {
         ))}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Bed Number</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Bed Number *</label>
             <input className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" value={bedNumber} onChange={(e) => setBedNumber(e.target.value)} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Ward</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Ward *</label>
             <input className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" value={ward} onChange={(e) => setWard(e.target.value)} />
           </div>
         </div>

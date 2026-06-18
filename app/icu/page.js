@@ -2,6 +2,8 @@ import Link from 'next/link'
 import prisma from '@/lib/prisma'
 import PatientCard from '@/components/PatientCard'
 
+export const dynamic = 'force-dynamic'
+
 async function getICUPatients() {
   try {
     return await prisma.patient.findMany({
@@ -21,24 +23,37 @@ export default async function ICUDashboard() {
   const onVentilator = patients.filter((p) => p.ventilatorSupport?.inUse).length
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Intensive Care Unit</h1>
-          <div className="flex gap-3 mt-1 text-sm text-gray-500">
-            <span>{patients.length} patient{patients.length !== 1 ? 's' : ''}</span>
-            {onVentilator > 0 && <span className="text-red-600 font-medium">● {onVentilator} on ventilator</span>}
+    <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6">
+
+      {/* Page header */}
+      <div className="mb-5 overflow-hidden rounded-2xl border border-sky-100 bg-white shadow-sm">
+        <div className="flex items-center justify-between gap-3 flex-wrap px-5 py-4 sm:px-6">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-widest text-violet-600">Critical Care</p>
+            <h1 className="mt-0.5 text-2xl font-bold text-slate-900">Intensive Care Unit</h1>
+            <div className="mt-1 flex flex-wrap gap-3 text-sm">
+              <span className="text-slate-500">{patients.length} patient{patients.length !== 1 ? 's' : ''}</span>
+              {onVentilator > 0 && (
+                <span className="font-semibold text-red-600">● {onVentilator} on ventilator</span>
+              )}
+            </div>
           </div>
+          <Link
+            href="/icu/new"
+            className="inline-flex min-h-11 items-center rounded-xl bg-violet-600 px-5 text-sm font-bold text-white transition hover:bg-violet-700"
+          >
+            + Admit to ICU
+          </Link>
         </div>
-        <Link href="/icu/new" className="px-4 py-2 bg-purple-600 text-white text-sm font-semibold rounded-lg hover:bg-purple-700 transition-colors">
-          + Admit to ICU
-        </Link>
       </div>
 
       {patients.length === 0 ? (
-        <div className="text-center py-16 text-gray-400">
-          <p className="text-4xl mb-3">💊</p>
-          <p className="text-lg font-medium">No patients in ICU</p>
+        <div className="rounded-2xl border border-sky-100 bg-white py-16 text-center shadow-sm">
+          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-violet-50 text-sm font-black text-violet-300">
+            ICU
+          </div>
+          <p className="text-base font-semibold text-slate-600">No patients in the ICU</p>
+          <p className="mt-1 text-sm text-slate-400">Click &quot;+ Admit to ICU&quot; to register a patient</p>
         </div>
       ) : (
         <div className="space-y-3">

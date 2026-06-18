@@ -62,11 +62,11 @@ export default async function IPDPatientDashboard({ params }) {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6 space-y-5">
-      <div className="flex items-center justify-between">
-        <Link href="/ipd" className="text-sm text-blue-600 hover:underline">← IPD Dashboard</Link>
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <Link href="/ipd" className="inline-flex min-h-11 items-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50">← IPD Dashboard</Link>
         <div className="flex gap-2">
-          <Link href={`/ipd/${id}/transfer`} className="text-sm px-3 py-1.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700">Transfer</Link>
-          <Link href={`/ipd/${id}/discharge-summary`} className="text-sm px-3 py-1.5 bg-gray-700 text-white rounded-lg hover:bg-gray-800">Discharge</Link>
+          <Link href={`/ipd/${id}/transfer`} className="inline-flex min-h-11 items-center px-4 bg-purple-600 text-white text-sm font-medium rounded-xl hover:bg-purple-700 transition-colors">Transfer Patient →</Link>
+          <Link href={`/ipd/${id}/discharge-summary`} className="inline-flex min-h-11 items-center px-4 bg-gray-700 text-white text-sm font-medium rounded-xl hover:bg-gray-800 transition-colors">Discharge</Link>
         </div>
       </div>
 

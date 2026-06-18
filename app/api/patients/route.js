@@ -1,5 +1,6 @@
 import prisma from '@/lib/prisma'
 import { patientSchema } from '@/lib/validation/patient'
+import { revalidatePath } from 'next/cache'
 
 export async function GET(request) {
   const { searchParams } = request.nextUrl
@@ -29,5 +30,6 @@ export async function POST(request) {
   }
 
   const patient = await prisma.patient.create({ data: result.data })
+  revalidatePath('/er')
   return Response.json(patient, { status: 201 })
 }
